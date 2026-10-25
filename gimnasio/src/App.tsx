@@ -8,6 +8,8 @@ import { Layout } from './componentes/Layout';
 import { NoEncontrado } from './componentes/NoEncontrado';
 import { PaginaClases } from './paginas/PaginaClases';
 import { PaginaClase } from './paginas/PaginaClase';
+import { PaginaEntrar } from './paginas/PaginaEntrar';
+import PaginaRegistro from './paginas/PaginaRegistro';
 
 function App() {
   return (
@@ -31,6 +33,16 @@ function App() {
         <Route
           path="/clases/:id"
           element={<PaginaClase />}
+        />
+
+        <Route
+          path="/entrar"
+          element={<PaginaEntrar />}
+        />
+
+        <Route
+          path="/registro"
+          element={<PaginaRegistro />}
         />
 
         <Route

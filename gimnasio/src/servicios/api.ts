@@ -10,6 +10,25 @@ export const api = axios.create({
   timeout: 5000, // si en 5 s no responde, es error
 });
 
+api.interceptors.request.use((config) => {
+  const guardada =
+    localStorage.getItem('gimnasio_sesion');
+
+  if (guardada) {
+    try {
+      const sesion = JSON.parse(guardada);
+
+      config.headers.Authorization =
+        `Bearer ${sesion.token}`;
+    } catch {
+      // Si la sesión guardada está dañada,
+      // se manda la petición sin token.
+    }
+  }
+
+  return config;
+});
+
 // El sobre de la Práctica 9B: toda respuesta exitosa llega como { data, meta }.
 export interface Sobre<T> {
   data: T;
