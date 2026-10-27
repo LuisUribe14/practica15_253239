@@ -1,12 +1,10 @@
-# practica16_253239
+# practica17_253239
 
-## Preguntas de la práctica
+### ¿La ruta protegida hace segura la aplicación? ¿Qué es lo que de verdad protege los datos?
+No completamente pq la ruta protegida evita que una persona navegue desde el frontend a ciertas paginas si no tiene sesion pero la seguridad real la pone el backend pq valida el token antes de entregar o modificar datos
 
-### ¿Por qué se usa un contexto y no props para la sesión?
-Porque la sesion se necesita en varios componentes de la aplicacion y con un contexto se puede acceder al usuario y al token desde cualquier componente sin tener que pasar la información por props entre muchos niveles
+### ¿Por qué no se manda el miembroId al inscribirse?
+Porque el backend obtiene el miembro a partir del usuario identificado en el jwt y asi no se confia en un miembroId enviado desde el frontend y se evita que una persona intente inscribir a otro miembro
 
-### ¿Qué pasa si un componente usa la sesión fuera del proveedor?
-El componente no puede acceder correctamente al contexto de sesion y en nuestro caso el hook lanza un error indicando que debe usarse dentro de SesionProvider
-
-### ¿Dónde se guarda el token y qué riesgo tiene ese lugar?
-El token se guarda en localStorage para que la sesion se mantenga aunque se recargue la psgina y el riesgo es que si existe un ataque de tipo XSS un script malicioso podria intentar leer ese token
+### ¿Qué diferencia hay entre un 401 y un 403?
+El 401 significa que la peticion no tiene una autenticacion valida por ejemplo porque falta el token o es invalido y el 403 significa que el usuario ss esta autenticado pero no tiene permiso para realizar esa accion
