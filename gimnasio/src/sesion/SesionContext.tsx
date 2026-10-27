@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type ReactNode
 } from 'react';
@@ -13,15 +14,18 @@ import {
 
 interface SesionContexto {
   sesion: Sesion | null;
+
   entrar: (
     correo: string,
     password: string
   ) => Promise<void>;
+
   registrar: (
     nombre: string,
     correo: string,
     password: string
   ) => Promise<void>;
+
   salir: () => void;
 }
 
@@ -36,7 +40,8 @@ export function SesionProvider({
   children: ReactNode;
 }) {
   const [sesion, setSesion] = useState<Sesion | null>(() => {
-    const guardada = localStorage.getItem(CLAVE_SESION);
+    const guardada =
+      localStorage.getItem(CLAVE_SESION);
 
     if (!guardada) {
       return null;
@@ -48,6 +53,24 @@ export function SesionProvider({
       return null;
     }
   });
+
+  useEffect(() => {
+    function cerrarPor401() {
+      setSesion(null);
+    }
+
+    window.addEventListener(
+      'sesion-expirada',
+      cerrarPor401
+    );
+
+    return () => {
+      window.removeEventListener(
+        'sesion-expirada',
+        cerrarPor401
+      );
+    };
+  }, []);
 
   async function entrar(
     correo: string,
@@ -104,7 +127,8 @@ export function SesionProvider({
 }
 
 export function useSesion() {
-  const contexto = useContext(SesionContext);
+  const contexto =
+    useContext(SesionContext);
 
   if (!contexto) {
     throw new Error(

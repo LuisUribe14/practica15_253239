@@ -1,7 +1,7 @@
 // servicios/gimnasio.ts — las llamadas a la API, tipadas.
 // Los componentes sólo ven estas funciones, nunca a Axios.
 import { api, type Sobre } from './api.ts';
-import type { Clase, ClaseConHorarios } from '../tipos.ts';
+import type { Clase, ClaseConHorarios, Inscripcion } from '../tipos.ts';
 
 // GET /clases
 export async function traerClases(): Promise<Clase[]> {
@@ -13,4 +13,21 @@ export async function traerClases(): Promise<Clase[]> {
 export async function traerClase(id: number): Promise<ClaseConHorarios> {
   const respuesta = await api.get<Sobre<ClaseConHorarios>>(`/clases/${id}`);
   return respuesta.data.data;
+}
+
+// GET /inscripciones/mias
+export async function traerMisInscripciones(): Promise<Inscripcion[]> {
+  const respuesta =
+    await api.get<Sobre<Inscripcion[]>>('/inscripciones/mias');
+
+  return respuesta.data.data;
+}
+
+// POST /inscripciones
+export async function inscribirse(
+  horarioId: number
+): Promise<void> {
+  await api.post('/inscripciones', {
+    horarioId
+  });
 }

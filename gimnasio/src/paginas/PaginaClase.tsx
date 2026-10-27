@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import {
   Link,
+  useLocation,
   useNavigate,
   useParams
 } from 'react-router-dom';
@@ -7,11 +9,21 @@ import {
 import { Cargando } from '../componentes/Cargando';
 import { MensajeError } from '../componentes/MensajeError';
 import { useClase } from '../hooks/useClase';
-import { URL_API } from '../servicios/api';
+import { URL_API, mensajeDeError } from '../servicios/api';
+import { inscribirse } from '../servicios/gimnasio';
+import { useSesion } from '../sesion/SesionContext';
 
 export function PaginaClase() {
   const { id } = useParams();
+
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { sesion } = useSesion();
+
+  const [aviso, setAviso] = useState('');
+  const [errorInscripcion, setErrorInscripcion] = useState('');
+  const [enviando, setEnviando] = useState<number | null>(null);
 
   const claseId = Number(id);
 
@@ -21,6 +33,42 @@ export function PaginaClase() {
     error,
     reintentar
   } = useClase(claseId);
+
+  async function manejarInscripcion(horarioId: number) {
+    setAviso('');
+    setErrorInscripcion('');
+
+    // Si no hay sesión, mandamos al login.
+    if (!sesion) {
+      navigate('/entrar', {
+        state: {
+          desde: location.pathname
+        }
+      });
+
+      return;
+    }
+
+    try {
+      setEnviando(horarioId);
+
+      await inscribirse(horarioId);
+
+      setAviso('Inscripción realizada correctamente.');
+
+      // Volvemos a pedir la clase para actualizar los lugares.
+      reintentar();
+    } catch (e) {
+      setErrorInscripcion(
+        mensajeDeError(
+          e,
+          'No se pudo realizar la inscripción.'
+        )
+      );
+    } finally {
+      setEnviando(null);
+    }
+  }
 
   if (cargando) {
     return <Cargando />;
@@ -68,6 +116,18 @@ export function PaginaClase() {
             {clase.descripcion} · {clase.duracionMin} min
           </p>
 
+          {aviso && (
+            <p className="aviso aviso--exito">
+              {aviso}
+            </p>
+          )}
+
+          {errorInscripcion && (
+            <p className="aviso aviso--error">
+              {errorInscripcion}
+            </p>
+          )}
+
           <h2>Horarios</h2>
 
           <ul className="horarios">
@@ -94,9 +154,14 @@ export function PaginaClase() {
                 ) : (
                   <button
                     className="boton boton--chico"
-                    onClick={() => navigate('/entrar')}
+                    disabled={enviando === h.id}
+                    onClick={() =>
+                      manejarInscripcion(h.id)
+                    }
                   >
-                    Inscribirme
+                    {enviando === h.id
+                      ? 'Inscribiendo...'
+                      : 'Inscribirme'}
                   </button>
                 )}
               </li>

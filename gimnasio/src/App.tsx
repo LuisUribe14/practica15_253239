@@ -10,6 +10,8 @@ import { PaginaClases } from './paginas/PaginaClases';
 import { PaginaClase } from './paginas/PaginaClase';
 import { PaginaEntrar } from './paginas/PaginaEntrar';
 import PaginaRegistro from './paginas/PaginaRegistro';
+import { PaginaMisInscripciones } from './paginas/PaginaMisInscripciones';
+import { RutaProtegida } from './rutas/RutaProtegida';
 
 function App() {
   return (
@@ -49,6 +51,13 @@ function App() {
           path="*"
           element={<NoEncontrado />}
         />
+
+        <Route element={<RutaProtegida />}>
+          <Route
+            path="/mis-inscripciones"
+            element={<PaginaMisInscripciones />}
+          />
+        </Route>
       </Route>
     </Routes>
   );

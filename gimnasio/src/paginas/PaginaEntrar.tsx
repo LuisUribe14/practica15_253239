@@ -4,6 +4,7 @@ import {
 } from 'react';
 import {
   Link,
+  useLocation,
   useNavigate
 } from 'react-router-dom';
 
@@ -13,6 +14,11 @@ import { mensajeDeError } from '../servicios/api';
 export function PaginaEntrar() {
   const { entrar } = useSesion();
   const navegar = useNavigate();
+  const location = useLocation();
+
+  const desde =
+    (location.state as { desde?: string } | null)?.desde
+    ?? '/clases';
 
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +35,7 @@ export function PaginaEntrar() {
 
     try {
       await entrar(correo, password);
-      navegar('/clases');
+      navegar(desde, { replace: true });
     } catch (e) {
       setError(
         mensajeDeError(
