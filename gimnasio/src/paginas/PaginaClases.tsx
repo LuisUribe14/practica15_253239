@@ -46,6 +46,7 @@ export function PaginaClases() {
               className="tarjeta-clase__imagen"
               src={`${URL_API}${c.imagen}`}
               alt={c.nombre}
+              loading="lazy"
             />
 
             <div className="tarjeta-clase__cuerpo">

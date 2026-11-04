@@ -3,15 +3,39 @@ import {
   Route,
   Routes
 } from 'react-router-dom';
+import { lazy } from 'react';
 
 import { Layout } from './componentes/Layout';
 import { NoEncontrado } from './componentes/NoEncontrado';
-import { PaginaClases } from './paginas/PaginaClases';
-import { PaginaClase } from './paginas/PaginaClase';
-import { PaginaEntrar } from './paginas/PaginaEntrar';
-import PaginaRegistro from './paginas/PaginaRegistro';
-import { PaginaMisInscripciones } from './paginas/PaginaMisInscripciones';
 import { RutaProtegida } from './rutas/RutaProtegida';
+
+const PaginaClases = lazy(() =>
+  import('./paginas/PaginaClases').then((m) => ({
+    default: m.PaginaClases
+  }))
+);
+
+const PaginaClase = lazy(() =>
+  import('./paginas/PaginaClase').then((m) => ({
+    default: m.PaginaClase
+  }))
+);
+
+const PaginaEntrar = lazy(() =>
+  import('./paginas/PaginaEntrar').then((m) => ({
+    default: m.PaginaEntrar
+  }))
+);
+
+const PaginaRegistro = lazy(() =>
+  import('./paginas/PaginaRegistro')
+);
+
+const PaginaMisInscripciones = lazy(() =>
+  import('./paginas/PaginaMisInscripciones').then((m) => ({
+    default: m.PaginaMisInscripciones
+  }))
+);
 
 function App() {
   return (

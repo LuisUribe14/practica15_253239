@@ -7,10 +7,15 @@ import {
 } from 'react';
 
 import type { Sesion } from '../tipos';
+
 import {
   entrar as entrarApi,
   registrar as registrarApi
 } from '../servicios/sesion';
+
+import {
+  useInscripcionesStore
+} from '../store/inscripciones';
 
 interface SesionContexto {
   sesion: Sesion | null;
@@ -54,9 +59,32 @@ export function SesionProvider({
     }
   });
 
+  const cargarInscripciones =
+    useInscripcionesStore(
+      (estado) => estado.cargar
+    );
+
+  const vaciarInscripciones =
+    useInscripcionesStore(
+      (estado) => estado.vaciar
+    );
+
+  useEffect(() => {
+    if (sesion) {
+      cargarInscripciones();
+    } else {
+      vaciarInscripciones();
+    }
+  }, [
+    sesion,
+    cargarInscripciones,
+    vaciarInscripciones
+  ]);
+
   useEffect(() => {
     function cerrarPor401() {
       setSesion(null);
+      vaciarInscripciones();
     }
 
     window.addEventListener(
@@ -70,7 +98,7 @@ export function SesionProvider({
         cerrarPor401
       );
     };
-  }, []);
+  }, [vaciarInscripciones]);
 
   async function entrar(
     correo: string,
@@ -109,7 +137,12 @@ export function SesionProvider({
 
   function salir() {
     setSesion(null);
-    localStorage.removeItem(CLAVE_SESION);
+
+    localStorage.removeItem(
+      CLAVE_SESION
+    );
+
+    vaciarInscripciones();
   }
 
   return (

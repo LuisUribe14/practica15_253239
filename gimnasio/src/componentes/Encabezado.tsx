@@ -1,6 +1,7 @@
-// <Encabezado> — RECURSO: la marca, los enlaces y la sesión del usuario.
+// <Encabezado> — la marca, los enlaces, la sesión y el contador de inscripciones.
 import { Link, NavLink } from 'react-router-dom';
 import { useSesion } from '../sesion/SesionContext';
+import { useInscripcionesStore } from '../store/inscripciones';
 
 function claseEnlace({ isActive }: { isActive: boolean }) {
   return isActive
@@ -10,6 +11,11 @@ function claseEnlace({ isActive }: { isActive: boolean }) {
 
 export function Encabezado() {
   const { sesion, salir } = useSesion();
+
+  const cantidadInscripciones =
+    useInscripcionesStore(
+      (estado) => estado.inscripciones.length
+    );
 
   return (
     <header className="barra">
@@ -36,6 +42,7 @@ export function Encabezado() {
                 className={claseEnlace}
               >
                 Mis inscripciones
+                {sesion && ` (${cantidadInscripciones})`}
               </NavLink>
             </li>
           </ul>
