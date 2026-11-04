@@ -1,10 +1,10 @@
-# practica17_253239
+# practica18_253239
 
-### ¿La ruta protegida hace segura la aplicación? ¿Qué es lo que de verdad protege los datos?
-No completamente pq la ruta protegida evita que una persona navegue desde el frontend a ciertas paginas si no tiene sesion pero la seguridad real la pone el backend pq valida el token antes de entregar o modificar datos
+### ¿Cuánto se ahorró y por qué el ahorro es pequeño?
+El archivo principal paso de 320.81 kB a 315.51 kB, por lo que se redujo aproximadamente 5.30 kB. El ahorro es pequeño porque las páginas de esta aplicación tienen poco codigo y gran parte del tamaño corresponde a librerias y código compartido que sigue siendo necesario desde el inicio
 
-### ¿Por qué no se manda el miembroId al inscribirse?
-Porque el backend obtiene el miembro a partir del usuario identificado en el jwt y asi no se confia en un miembroId enviado desde el frontend y se evita que una persona intente inscribir a otro miembro
+### ¿Por qué falla la API si vite preview corre en el puerto 4173?
+Porque el backend permite las solicitudes del frontend desde localhost:5173 y al ejecutar vite preview el frontend utiliza localhost:4173 que el navegador considera un origen diferente
 
-### ¿Qué diferencia hay entre un 401 y un 403?
-El 401 significa que la peticion no tiene una autenticacion valida por ejemplo porque falta el token o es invalido y el 403 significa que el usuario ss esta autenticado pero no tiene permiso para realizar esa accion
+### ¿Cuándo usarías Context y cuándo Zustand?
+Pues depende usaria Context para informacion global relativamente estable como la sesion del usuario y Usaria Zustand para estados compartidos que cambian con mas frecuencia y son utilizados por varios componentes
