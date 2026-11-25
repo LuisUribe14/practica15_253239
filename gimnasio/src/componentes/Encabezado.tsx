@@ -1,7 +1,7 @@
-// <Encabezado> — la marca, los enlaces, la sesión y el contador de inscripciones.
 import { Link, NavLink } from 'react-router-dom';
 import { useSesion } from '../sesion/SesionContext';
 import { useInscripcionesStore } from '../store/inscripciones';
+import { useInstalar } from '../hooks/useInstalar';
 
 function claseEnlace({ isActive }: { isActive: boolean }) {
   return isActive
@@ -11,6 +11,8 @@ function claseEnlace({ isActive }: { isActive: boolean }) {
 
 export function Encabezado() {
   const { sesion, salir } = useSesion();
+
+  const { puedeInstalar, instalar } = useInstalar();
 
   const cantidadInscripciones =
     useInscripcionesStore(
@@ -49,6 +51,16 @@ export function Encabezado() {
         </nav>
 
         <div className="barra__sesion">
+
+          {puedeInstalar && (
+            <button
+              className="boton boton--chico"
+              onClick={instalar}
+            >
+              Instalar app
+            </button>
+          )}
+
           {sesion ? (
             <>
               <span className="barra__usuario">

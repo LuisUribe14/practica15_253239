@@ -33,6 +33,7 @@ export function PaginaClase() {
     );
 
   const [aviso, setAviso] = useState('');
+  const [avisoCompartir, setAvisoCompartir] = useState('');
   const [errorInscripcion, setErrorInscripcion] = useState('');
   const [enviando, setEnviando] = useState<number | null>(null);
 
@@ -44,6 +45,42 @@ export function PaginaClase() {
     error,
     reintentar
   } = useClase(claseId);
+
+  async function compartirClase() {
+    if (!clase) return;
+
+    setAvisoCompartir('');
+
+    const datos = {
+      title: clase.nombre,
+      text: `Conoce esta clase de Gimnasio Titanes: ${clase.nombre}`,
+      url: window.location.href
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(datos);
+
+        setAvisoCompartir(
+          'Acción de compartir completada.'
+        );
+      } else {
+        await navigator.clipboard.writeText(datos.url);
+
+        setAvisoCompartir(
+          'Enlace copiado al portapapeles.'
+        );
+      }
+    } catch (e) {
+      if (e instanceof Error && e.name === 'AbortError') {
+        return;
+      }
+
+      setAvisoCompartir(
+        'No se pudo compartir la clase.'
+      );
+    }
+  }
 
   function yaEstaInscrito(horarioId: number) {
     return inscripciones.some(
@@ -76,11 +113,17 @@ export function PaginaClase() {
         'Inscripción realizada correctamente.'
       );
 
+      // Vibrar cuando la inscripción sea exitosa.
+      if ('vibrate' in navigator) {
+        navigator.vibrate(200);
+      }
+
       // Actualiza los lugares disponibles de la clase.
       reintentar();
 
       // Actualiza el store y el contador del encabezado.
       await cargarInscripciones();
+
     } catch (e) {
       setErrorInscripcion(
         mensajeDeError(
@@ -139,6 +182,20 @@ export function PaginaClase() {
           <p className="pagina__bajada">
             {clase.descripcion} · {clase.duracionMin} min
           </p>
+
+          <button
+            type="button"
+            className="boton boton--chico"
+            onClick={compartirClase}
+          >
+            Compartir
+          </button>
+
+          {avisoCompartir && (
+            <p className="aviso" role="status">
+              {avisoCompartir}
+            </p>
+          )}
 
           {aviso && (
             <p className="aviso aviso--exito">
